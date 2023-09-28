@@ -488,7 +488,61 @@ fn p20() -> Result<()> {
 
     Ok(())
 }
+
+fn p21() -> Result<()> {
+    println!("P-021: レシート明細データ（df_receipt）に対し、件数をカウントせよ。");
+
+    // 処理
+    let lazy_df = get_lazy_df_receipt()?;
+    let df = lazy_df.collect()?;
+
+    let (height, _width) = df.shape();
+
+    // 回答
+    println!("{:?}", height);
+
+    // 回答ファイルの作成
+
+    // let mut file = std::fs::File::create("./answer/p21.csv").unwrap();
+    // CsvWriter::new(&mut file).finish(&mut df).unwrap();
+
+    Ok(())
+}
+
+fn p22() -> Result<()> {
+    println!("P-022: レシート明細データ（df_receipt）の顧客ID（customer_id）に対し、ユニーク件数をカウントせよ。");
+
+    // 処理
+    let lazy_df = get_lazy_df_receipt()?;
+    let df = lazy_df.select([col("customer_id").unique()]).collect()?;
+
+    let (height, _width) = df.shape();
+
+    // 回答
+    println!("{:?}", height);
+
+    Ok(())
+}
+
+fn p23() -> Result<()> {
+    println!("P-023: レシート明細データ（df_receipt）に対し、店舗コード（store_cd）ごとに売上金額（amount）と売上数量（quantity）を合計せよ。");
+
+    // 処理
+    let lazy_df = get_lazy_df_receipt()?;
+    let df = lazy_df
+        .groupby([col("store_cd")])
+        .agg([
+            col("amount").sum().alias("amount"),
+            col("quantity").sum().alias("quantity"),
+        ])
+        .collect()?;
+
+    // 回答
+    println!("{:?}", df);
+
+    Ok(())
+}
 fn view_problem() -> Result<()> {
-    p20()?;
+    p23()?;
     Ok(())
 }
